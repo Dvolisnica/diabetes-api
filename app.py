@@ -1,15 +1,14 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import joblib
 import numpy as np
+import joblib
 
-# Učitavanje modela
-model = joblib.load("diabetes_model.joblib")
-
-# Inicijalizacija FastAPI aplikacije
 app = FastAPI(title="Diabetes Prediction API")
 
-# Definisanje strukture inputa
+# Load the model
+model = joblib.load("diabetes_model.joblib")
+
+# Define expected input format
 class PatientData(BaseModel):
     BMI: float
     TEZINA: float
@@ -31,11 +30,10 @@ class PatientData(BaseModel):
 
 @app.post("/predict")
 def predict(data: PatientData):
-    # Pretvaranje inputa u format koji model očekuje
-    input_data = np.array([[data.BMI, data.TEZINA, data.VISINA, data.PRITISAK_DIASTOLIC, 
-                             data.PRITISAK_SISTOLIC, data.Glukoza, data.HbA1c, data.Insulin,
-                             data.TSH, data.FT3, data.FT4, data.Trigliceridi, data.HDL, 
-                             data.LDL, data.Holesterol, data.GENDER, data.PUSENJE]])
+    input_data = np.array([[getattr(data, field) for field in data.__annotations__]])
+    prediction = model.predict(input_data)[0]
+    return {"prediction": "Diabetes: Yes" if prediction == 1 else "Diabetes: No"}
+
     
     prediction = model.predict(input_data)[0]
 
