@@ -24,7 +24,7 @@ class PatientData(BaseModel):
 
 @app.post("/predict")
 def predict(data: PatientData):
-    input_array = np.array([[data.GENDER, data.BMI, data.Glukoza, data.HbA1c,
+    input_array = np.array([[data.NHC,data.GENDER, data.BMI, data.Glukoza, data.HbA1c,
                              data.Trigliceridi, data.HDL, data.SHBG, data.ALT, data.AST]])
     
     probability = model.predict_proba(input_array)[0][1]  # vjerovatnoća za klasu 1
