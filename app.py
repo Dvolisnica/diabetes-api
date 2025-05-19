@@ -30,12 +30,14 @@ class PatientData(BaseModel):
 
 @app.post("/predict")
 def predict(data: PatientData):
-    input_data = np.array([[getattr(data, field) for field in data.__annotations__]])
-    prediction = model.predict(input_data)[0]
-    return {"prediction": "Diabetes: Yes" if prediction == 1 else "Diabetes: No"}
-
+    input_array = np.array([[data.GENDER, data.BMI, data.Glukoza, data.HbA1c,
+                             data.Trigliceridi, data.HDL, data.SHBG, data.ALT, data.AST]])
     
-    prediction = model.predict(input_data)[0]
+    probability = model.predict_proba(input_array)[0][1]  # vjerovatnoća za klasu 1
+    percentage = round(probability * 100, 2)
 
-    result = "Diabetes: Yes" if prediction == 1 else "Diabetes: No"
-    return {"prediction": result}
+    return {
+        "prediction": "Diabetes: Yes" if percentage >= 50 else "Diabetes: No",
+        "probability": f"{percentage} %"
+    }
+
