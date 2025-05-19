@@ -11,6 +11,7 @@ model = joblib.load("diabetes_model.joblib")
 # Define expected input format
 
 class PatientData(BaseModel):
+    NHC:float
     GENDER: int
     BMI: float
     Glukoza: float
