@@ -9,24 +9,17 @@ app = FastAPI(title="Diabetes Prediction API")
 model = joblib.load("diabetes_model.joblib")
 
 # Define expected input format
+
 class PatientData(BaseModel):
+    GENDER: int
     BMI: float
-    TEZINA: float
-    VISINA: float
-    PRITISAK_DIASTOLIC: float
-    PRITISAK_SISTOLIC: float
     Glukoza: float
     HbA1c: float
-    Insulin: float
-    TSH: float
-    FT3: float
-    FT4: float
     Trigliceridi: float
     HDL: float
-    LDL: float
-    Holesterol: float
-    GENDER: int
-    PUSENJE: int
+    SHBG: float
+    ALT: float
+    AST: float
 
 @app.post("/predict")
 def predict(data: PatientData):
